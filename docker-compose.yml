@@ -28,6 +28,7 @@ services:
       - MESHTASTIC_NODE_IP=ble-bridge
       - MESHTASTIC_TCP_PORT=4403
       - MESHTASTIC_USE_TLS=false
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
       - SESSION_SECRET=${SESSION_SECRET:-change-this-secret-key-123}
     depends_on:
       - ble-bridge
