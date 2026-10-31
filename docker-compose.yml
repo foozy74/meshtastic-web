@@ -1,0 +1,36 @@
+services:
+  ble-bridge:
+    image: ghcr.io/yeraze/meshtastic-ble-bridge:latest
+    container_name: meshtastic-ble-bridge
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+      - /var/lib/bluetooth:/var/lib/bluetooth:ro
+    environment:
+      - BLE_ADDRESS=${BLE_ADDRESS}
+      - CACHE_NODES=false
+      - MAX_CACHE_NODES=500
+    ports:
+      - "4403:4403"
+
+  meshmonitor:
+    image: ghcr.io/yeraze/meshmonitor:latest
+    container_name: meshmonitor
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:3001"
+    volumes:
+      - meshmonitor-data:/data
+    environment:
+      - NODE_ENV=production
+      - MESHTASTIC_NODE_IP=ble-bridge
+      - MESHTASTIC_TCP_PORT=4403
+      - MESHTASTIC_USE_TLS=false
+      - SESSION_SECRET=${SESSION_SECRET:-change-this-secret-key-123}
+    depends_on:
+      - ble-bridge
+
+volumes:
+  meshmonitor-data:
+    driver: local
