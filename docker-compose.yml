@@ -3,6 +3,7 @@ services:
     image: ghcr.io/yeraze/meshtastic-ble-bridge:latest
     container_name: meshtastic-ble-bridge
     restart: unless-stopped
+    command: ["${BLE_ADDRESS}"]
     privileged: true
     volumes:
       - /var/run/dbus:/var/run/dbus
